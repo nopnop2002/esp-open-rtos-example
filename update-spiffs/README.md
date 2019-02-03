@@ -49,7 +49,7 @@ start Broadcast service
 
 
 This program update file content using TCP (port:8100)   
-You can update current file content using nc(NetCat)   
+You can update current file content using nc.   
 
 ![spiffs-3](https://user-images.githubusercontent.com/6020549/52172429-2fbba780-27b2-11e9-98d9-238df8c48367.jpg)
 
