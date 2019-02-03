@@ -25,7 +25,7 @@ An IP address of ESP8266 may never be same, but you can know an IP address of ES
 This program receive any command using TCP (port:23)   
 This is very easy using nc.   
 
-**echo view | nc ESP8266's-IP 23**
+**echo view | nc ESP8266's-IP 23**   
 view current file content   
 There is initial files in files directory.   
 
