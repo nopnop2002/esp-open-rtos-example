@@ -35,7 +35,7 @@ There is initial files in files directory.
 This program update file content using TCP (port:8100)   
 You can update current file content using nc(NetCat)   
 
-  cat new.json | nc ESP8266's-IP 8100   
+  $ cat new.json | nc ESP8266's-IP 8100
 
 ![spiffs-3](https://user-images.githubusercontent.com/6020549/52171734-57584300-27a5-11e9-8ffc-34b14c7de3f5.jpg)
 
