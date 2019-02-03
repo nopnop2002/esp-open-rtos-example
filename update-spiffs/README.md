@@ -25,6 +25,8 @@ You can know an IP address of ESP8266.
 
 This program send current file content using TCP (port:23)   
 You can comfirm current file content using nc(NetCat)   
+There is initial files in files directory.   
+
 
 ![spiffs-2](https://user-images.githubusercontent.com/6020549/52171730-4f000800-27a5-11e9-93a1-01326ac757a2.jpg)
 
