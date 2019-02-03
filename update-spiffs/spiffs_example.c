@@ -133,7 +133,7 @@ static void jsonp(int dst, char * JSON_STRING) {
 }
 
 #if defined(USE_POSIX)
-static void example_read_file_posix(int dst, char * fileName)
+static void example_read_file_posix(char * cmd, int dst, char * fileName)
 {
     const int buf_size = 0xFF;
     uint8_t buf[buf_size];
@@ -150,19 +150,25 @@ static void example_read_file_posix(int dst, char * fileName)
     //if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
 
     buf[read_bytes] = '\0';    // zero terminate string
-    sprintf(Gbuf, "Data: %s\n", buf);
+    sprintf(Gbuf, "%s\n", buf);
     if (dst == 0) printf("%s", Gbuf);
     //if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
 
-    if (dst == 0) jsonp(dst, (char *)buf);
-    if (dst != 0) jsonp(dst, (char *)buf);
+    if (strcmp(cmd, "parse") == 0) {
+      if (dst == 0) jsonp(dst, (char *)buf);
+      if (dst != 0) jsonp(dst, (char *)buf);
+    }
+    if (strcmp(cmd, "view") == 0) {
+      if (dst == 0) printf("%s", Gbuf);
+      if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
+    }
 
     close(fd);
 }
 #endif
 
 #if !defined(USE_POSIX)
-static void example_read_file_spiffs(int dst, char * fileName)
+static void example_read_file_spiffs(char * cmd, int dst, char * fileName)
 {
     const int buf_size = 0xFF;
     uint8_t buf[buf_size];
@@ -179,12 +185,18 @@ static void example_read_file_spiffs(int dst, char * fileName)
     //if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
 
     buf[read_bytes] = '\0';    // zero terminate string
-    sprintf(Gbuf, "Data: %s\n", buf);
+    sprintf(Gbuf, "%s\n", buf);
     if (dst == 0) printf("%s", Gbuf);
     //if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
 
-    if (dst == 0) jsonp(dst, (char *)buf);
-    if (dst != 0) jsonp(dst, (char *)buf);
+    if (strcmp(cmd, "parse") == 0) {
+      if (dst == 0) jsonp(dst, (char *)buf);
+      if (dst != 0) jsonp(dst, (char *)buf);
+    }
+    if (strcmp(cmd, "view") == 0) {
+      if (dst == 0) printf("%s", Gbuf);
+      if (dst != 0) lwip_write(dst, Gbuf, strlen(Gbuf));
+    }
 
     SPIFFS_close(&fs, fd);
 }
@@ -192,7 +204,8 @@ static void example_read_file_spiffs(int dst, char * fileName)
 
 static void example_write_file_posix(char * fileName, uint8_t * buf, int blen)
 {
-    int fd = open(fileName, O_WRONLY|O_CREAT, 0);
+    //int fd = open(fileName, O_WRONLY|O_CREAT, 0);
+    int fd = open(fileName, O_WRONLY|O_CREAT|O_TRUNC, 0);
     if (fd < 0) {
         printf("Error opening file\n");
         return;
@@ -405,20 +418,35 @@ void task2(void *pvParameters)
       }
 
       printf("Recv=[%s]\n",Gbuf);
-      if(strncmp(Gbuf,"show",4) == 0){
+      if(strncmp(Gbuf,"parse",5) == 0){
         // Take Mutex, Enter critical section
         xSemaphoreTake(xMutex, portMAX_DELAY);
 
         #if defined(USE_POSIX)
-          example_read_file_posix(0, FILE_NAME);
-          example_read_file_posix(dstSocket, FILE_NAME);
+          example_read_file_posix("parse", 0, FILE_NAME);
+          example_read_file_posix("parse", dstSocket, FILE_NAME);
 	#else
-          example_read_file_spiffs(0, FILE_NAME);
-          example_read_file_spiffs(dstSocket, FILE_NAME);
+          example_read_file_spiffs("parse", 0, FILE_NAME);
+          example_read_file_spiffs("parse", dstSocket, FILE_NAME);
         #endif
 
         // Give Mutex, Leave critical section
         xSemaphoreGive(xMutex);
+      } else if(strncmp(Gbuf,"view",4) == 0){
+        // Take Mutex, Enter critical section
+        xSemaphoreTake(xMutex, portMAX_DELAY);
+
+        #if defined(USE_POSIX)
+          example_read_file_posix("view", 0, FILE_NAME);
+          example_read_file_posix("view", dstSocket, FILE_NAME);
+	#else
+          example_read_file_spiffs("view", 0, FILE_NAME);
+          example_read_file_spiffs("view", dstSocket, FILE_NAME);
+        #endif
+
+        // Give Mutex, Leave critical section
+        xSemaphoreGive(xMutex);
+
       } else if(strncmp(Gbuf,"info",4) == 0){
         example_fs_info(0);
         example_fs_info(dstSocket);

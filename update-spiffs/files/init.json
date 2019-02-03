@@ -1,1 +1,7 @@
-{"user": "johndoe", "admin": true, "uid": 1000, "groups": ["users", "wheel", "audio", "video"]}
+{
+ "user": "johndoe", 
+ "admin": true, 
+ "uid": 1000, 
+ "groups": 
+ ["users", "wheel", "audio", "video"]
+}

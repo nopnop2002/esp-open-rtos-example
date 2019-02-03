@@ -25,9 +25,12 @@ An IP address of ESP8266 may never be same, but you can know an IP address of ES
 This program receive any command using TCP (port:23)   
 This is very easy using nc.   
 
-echo show | nc ESP8266's-IP 23   
-show current file content   
+echo view | nc ESP8266's-IP 23   
+view current file content   
 There is initial files in files directory.   
+
+echo parse | nc ESP8266's-IP 23   
+parse current file content   
 
 echo info | nc ESP8266's-IP 23   
 show SPIFFS Information   
@@ -41,9 +44,11 @@ stop Broadcast service
 echo start | nc ESP8266's-IP 23   
 start Broadcast service
 
-![spiffs-2](https://user-images.githubusercontent.com/6020549/52172428-2fbba780-27b2-11e9-9e3d-3b467585ed78.jpg)
+![spiffs-11](https://user-images.githubusercontent.com/6020549/52176511-49331280-27f7-11e9-84fd-ab58948bb822.jpg)
 
-![spiffs-5](https://user-images.githubusercontent.com/6020549/52172426-2fbba780-27b2-11e9-8d48-6a65f43ee3ca.jpg)
+![spiffs-12](https://user-images.githubusercontent.com/6020549/52176513-4df7c680-27f7-11e9-85af-f994ed04960c.jpg)
+
+![spiffs-41](https://user-images.githubusercontent.com/6020549/52176526-62d45a00-27f7-11e9-9ff9-9b605372047b.jpg)
 
 ---
 
@@ -51,9 +56,11 @@ start Broadcast service
 This program update file content using TCP (port:8100)   
 You can update current file content using nc.   
 
-![spiffs-3](https://user-images.githubusercontent.com/6020549/52172429-2fbba780-27b2-11e9-98d9-238df8c48367.jpg)
+![spiffs-21](https://user-images.githubusercontent.com/6020549/52176534-71227600-27f7-11e9-9a33-af788b03a003.jpg)
 
 Update done.   
 
-![spiffs-4](https://user-images.githubusercontent.com/6020549/52172430-2fbba780-27b2-11e9-85b0-8139135ee6b5.jpg)
+![spiffs-31](https://user-images.githubusercontent.com/6020549/52176541-7da6ce80-27f7-11e9-8cb8-f142b4c089de.jpg)
+
+![spiffs-32](https://user-images.githubusercontent.com/6020549/52176544-826b8280-27f7-11e9-8f70-a8a78d0691d8.jpg)
 
