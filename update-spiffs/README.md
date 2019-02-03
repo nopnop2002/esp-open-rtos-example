@@ -29,19 +29,19 @@ This is very easy using nc.
 view current file content   
 There is initial files in files directory.   
 
-##echo parse | nc ESP8266's-IP 23   
+**echo parse | nc ESP8266's-IP 23**   
 parse current file content   
 
-##echo info | nc ESP8266's-IP 23   
+**echo info | nc ESP8266's-IP 23**   
 show SPIFFS Information   
 
-##echo dir | nc ESP8266's-IP 23   
+**echo dir | nc ESP8266's-IP 23**   
 show Directory Information   
 
-##echo stop | nc ESP8266's-IP 23   
+**echo stop | nc ESP8266's-IP 23**   
 stop Broadcast service   
 
-##echo start | nc ESP8266's-IP 23   
+**echo start | nc ESP8266's-IP 23**   
 start Broadcast service
 
 ![spiffs-11](https://user-images.githubusercontent.com/6020549/52176511-49331280-27f7-11e9-84fd-ab58948bb822.jpg)
@@ -55,6 +55,8 @@ start Broadcast service
 
 This program update file content using TCP (port:8100)   
 You can update current file content using nc.   
+
+**cat new.json | nc ESP8266's-IP 8100**   
 
 ![spiffs-21](https://user-images.githubusercontent.com/6020549/52176534-71227600-27f7-11e9-9a33-af788b03a003.jpg)
 
