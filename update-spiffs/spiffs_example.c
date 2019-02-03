@@ -39,7 +39,7 @@
 /* Remove this line if read by SPIFFS */
 #define USE_POSIX
 
-/* Enable this line if wait for telnet client input */
+/* Enable this line if you want show prompt sign */
 //#define ENABLE_PROMPT
 
 char Gbuf[1024];
@@ -53,6 +53,7 @@ TimerHandle_t timerHandle;
 
 UBaseType_t uxQueueLength = 10;
 UBaseType_t uxItemSize = 64;
+bool xTimerEnable = true;
 
 static int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
   if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
@@ -252,10 +253,10 @@ static void timer_cb(TimerHandle_t xTimer)
   char buffer[uxItemSize];
   TickType_t nowTick;
   nowTick = xTaskGetTickCount();
-  printf("[%s:%d] Start\n",pcTaskGetName(0),nowTick);
+  printf("[%s:%d] Start xTimerEnable=%s\n",pcTaskGetName(0),nowTick,((xTimerEnable == false)? "false": "true"));
 
   struct ip_info info;
-  if (sdk_wifi_get_ip_info(STATION_IF, &info)) {
+  if (sdk_wifi_get_ip_info(STATION_IF, &info) && xTimerEnable) {
     printf("[%s:%d] IP address="IPSTR"\n",pcTaskGetName(0),nowTick,IP2STR(&info.ip));
     //sprintf(buffer,"Hello World!! %d",nowTick);
     sprintf(buffer,"Connect to "IPSTR,IP2STR(&info.ip));
@@ -381,38 +382,6 @@ void task2(void *pvParameters)
     //printf("[%s:%d] %s から接続を受けました\n",pcTaskGetName(0),nowTick,inet_ntoa(dstAddr.sin_addr));
     printf("[%s:%d] A connection was received from %s\n",pcTaskGetName(0),nowTick,inet_ntoa(dstAddr.sin_addr));
 
-    example_fs_info(0);
-    //example_fs_info(dstSocket);
-
-    example_fs_dir(0);
-    //example_fs_dir(dstSocket);
-
-    // Take Mutex, Enter critical section
-    xSemaphoreTake(xMutex, portMAX_DELAY);
-
-#if defined(USE_POSIX)
-    example_read_file_posix(0, FILE_NAME);
-    example_read_file_posix(dstSocket, FILE_NAME);
-#else
-    example_read_file_spiffs(0, FILE_NAME);
-    example_read_file_spiffs(dstSocket, FILE_NAME);
-#endif
-
-// for DEBUG
-#if 0
-    uint8_t bbuf[] = "{\"user\": \"charie\", \"admin\": false, \"uid\": 1300}";
-    example_write_file_posix(FILE_NAME, bbuf, sizeof(bbuf));
-
-#if defined(USE_POSIX)
-    example_read_file_posix(0, FILE_NAME);
-    example_read_file_posix(dstSocket, FILE_NAME);
-#else
-    example_read_file_spiffs(0, FILE_NAME);
-    example_read_file_spiffs(dstSocket, FILE_NAME);
-#endif
-#endif
-// for DEBUG
-
     // Give Mutex, Leave critical section
     xSemaphoreGive(xMutex);
 
@@ -435,12 +404,33 @@ void task2(void *pvParameters)
         lwip_close(dstSocket); break;
       }
 
-#if defined(ENABLE_PROMPT)
       printf("Recv=[%s]\n",Gbuf);
-      if(strncmp(Gbuf,"exit",4) == 0){
-        lwip_close(dstSocket); break;
+      if(strncmp(Gbuf,"show",4) == 0){
+        // Take Mutex, Enter critical section
+        xSemaphoreTake(xMutex, portMAX_DELAY);
+
+        #if defined(USE_POSIX)
+          example_read_file_posix(0, FILE_NAME);
+          example_read_file_posix(dstSocket, FILE_NAME);
+	#else
+          example_read_file_spiffs(0, FILE_NAME);
+          example_read_file_spiffs(dstSocket, FILE_NAME);
+        #endif
+
+        // Give Mutex, Leave critical section
+        xSemaphoreGive(xMutex);
+      } else if(strncmp(Gbuf,"info",4) == 0){
+        example_fs_info(0);
+        example_fs_info(dstSocket);
+	example_fs_dir(0);
+      } else if(strncmp(Gbuf,"dir",3) == 0){
+	example_fs_dir(0);
+	example_fs_dir(dstSocket);
+      } else if(strncmp(Gbuf,"stop",4) == 0){
+        xTimerEnable = false;
+      } else if(strncmp(Gbuf,"start",5) == 0){
+        xTimerEnable = true;
       }
-#endif
     } // end while
 
   } // wnd wihile
