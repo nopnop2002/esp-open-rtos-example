@@ -25,23 +25,23 @@ An IP address of ESP8266 may never be same, but you can know an IP address of ES
 This program receive any command using TCP (port:23)   
 This is very easy using nc.   
 
-echo view | nc ESP8266's-IP 23   
+##echo view | nc ESP8266's-IP 23   
 view current file content   
 There is initial files in files directory.   
 
-echo parse | nc ESP8266's-IP 23   
+##echo parse | nc ESP8266's-IP 23   
 parse current file content   
 
-echo info | nc ESP8266's-IP 23   
+##echo info | nc ESP8266's-IP 23   
 show SPIFFS Information   
 
-echo dir | nc ESP8266's-IP 23   
+##echo dir | nc ESP8266's-IP 23   
 show Directory Information   
 
-echo stop | nc ESP8266's-IP 23   
+##echo stop | nc ESP8266's-IP 23   
 stop Broadcast service   
 
-echo start | nc ESP8266's-IP 23   
+##echo start | nc ESP8266's-IP 23   
 start Broadcast service
 
 ![spiffs-11](https://user-images.githubusercontent.com/6020549/52176511-49331280-27f7-11e9-84fd-ab58948bb822.jpg)
