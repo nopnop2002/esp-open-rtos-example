@@ -16,7 +16,8 @@ You can use this simple udp receiver, writen in python:
 	    msg = result[0][0].recv(1024)
 	    print msg.strip()
 
-An IP address of ESP8266 may never be same, but you can know an IP address of ESP8266.   
+An IP address of ESP8266 may never be same.   
+You can know an IP address of ESP8266.   
 
 ![spiffs-1](https://user-images.githubusercontent.com/6020549/52171728-4c051780-27a5-11e9-81ad-b5adda456ca1.jpg)
 
