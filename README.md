@@ -1,7 +1,7 @@
 # esp-open-rtos-example
 
 # update-spiffs   
-Update a file on SPIFFS via network.   
+Update file on SPIFFS via network.   
 
 	$ cd Your-esp-open-rtos-Home
 	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
@@ -17,4 +17,14 @@ Japanese Font Driver.
 	$ cd esp-open-rtos-example/spiffs-fontx
 	$ make
 	$ sudo make flash
+
+# ssd1306-kanji   
+Display Japanese Font to ssd1306 OLED.   
+
+	$ cd Your-esp-open-rtos-Home
+	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
+	$ cd esp-open-rtos-example/spiffs-kanji
+	$ make
+	$ sudo make flash
+
 
