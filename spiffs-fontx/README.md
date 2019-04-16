@@ -1,6 +1,6 @@
 # spiffs-fontx
 
-Example of Japanese Font Driver.   
+Japanese Font Driver.   
 
 __This example require 4MByte FLASH size.__   
 __Before build program, Make erase all Flash.__   

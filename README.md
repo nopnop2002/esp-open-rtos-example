@@ -1,7 +1,7 @@
 # esp-open-rtos-example
 
 # update-spiffs   
-Example which renews a file on SPIFFS via a network.   
+Update a file on SPIFFS via network.   
 
 	$ cd Your-esp-open-rtos-Home
 	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
@@ -10,7 +10,7 @@ Example which renews a file on SPIFFS via a network.
 	$ sudo make flash
 
 # spiffs-fontx   
-Example of Japanese Font Driver.   
+Japanese Font Driver.   
 
 	$ cd Your-esp-open-rtos-Home
 	$ git clone https://github.com/nopnop2002/esp-open-rtos-example

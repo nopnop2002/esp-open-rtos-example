@@ -1,6 +1,6 @@
 # update-spiffs
 
-Example which renews a file on SPIFFS via a network.   
+Update a file on SPIFFS via network.   
 
 This program broadcast my IP-Address using UDP (port:8200)   
 You can use this simple udp receiver, writen in python:   
