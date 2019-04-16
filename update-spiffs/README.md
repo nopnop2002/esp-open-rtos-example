@@ -22,7 +22,7 @@ An IP address of ESP8266 may never be same, but you can know an IP address of ES
 
 ---
 
-__This program require 4MByte FLASH size.__   
+__This example require 4MByte FLASH size.__   
 __Before build program, Make erase all Flash.__   
 
 This program receive any command using TCP (port:23)   
