@@ -44,9 +44,7 @@
 
 char Gbuf[1024];
 
-SemaphoreHandle_t xSemaphore1;
-SemaphoreHandle_t xSemaphore2;
-SemaphoreHandle_t xSemaphore3;
+SemaphoreHandle_t xSemaphore;
 SemaphoreHandle_t xMutex;
 QueueHandle_t xQueue;
 TimerHandle_t timerHandle;
@@ -302,14 +300,8 @@ void task1(void *pvParameters)
   printf("[%s:%d] Connected to AP\n",pcTaskGetName(0),nowTick);
   showNetworkInfo();
 
-  /* Now start task2 */
-  xSemaphoreGive(xSemaphore1);
-
-  /* Now start task3 */
-  xSemaphoreGive(xSemaphore2);
-
-  /* Now start task4 */
-  xSemaphoreGive(xSemaphore3);
+  /* Now start other task */
+  xSemaphoreGive(xSemaphore);
 
   // Create & Start Timer
   timerHandle = xTimerCreate("Trigger", 5000/portTICK_PERIOD_MS, pdTRUE, NULL, timer_cb);
@@ -340,7 +332,8 @@ void task2(void *pvParameters)
   printf("[%s:%d] Start\n",pcTaskGetName(0),nowTick);
 
   /* wait for Semaphore */
-  xSemaphoreTake(xSemaphore1, portMAX_DELAY);
+  xSemaphoreTake(xSemaphore, portMAX_DELAY);
+  xSemaphoreGive(xSemaphore);
   nowTick = xTaskGetTickCount();
   printf("[%s:%d] Take\n",pcTaskGetName(0),nowTick);
 
@@ -371,17 +364,6 @@ void task2(void *pvParameters)
   ret = lwip_listen(srcSocket, 5);
   /* should succeed */
   LWIP_ASSERT("ret == 0", ret == 0);
-
-#if SPIFFS_SINGLETON == 1
-  esp_spiffs_init();
-#else
-  // for run-time configuration when SPIFFS_SINGLETON = 0
-  esp_spiffs_init(0x200000, 0x10000);
-#endif
-
-  if (esp_spiffs_mount() != SPIFFS_OK) {
-      printf("Error mount SPIFFS\n");
-  }
 
   while(1) {
     // 接続の受付け
@@ -475,7 +457,8 @@ void task3(void *pvParameters)
   printf("[%s:%d] Start\n",pcTaskGetName(0),nowTick);
 
   /* wait for Semaphore */
-  xSemaphoreTake(xSemaphore2, portMAX_DELAY);
+  xSemaphoreTake(xSemaphore, portMAX_DELAY);
+  xSemaphoreGive(xSemaphore);
   nowTick = xTaskGetTickCount();
   printf("[%s:%d] Take\n",pcTaskGetName(0),nowTick);
 
@@ -562,7 +545,8 @@ void task4(void *pvParameters)
   printf("[%s:%d] Start\n",pcTaskGetName(0),nowTick);
 
   /* wait for Semaphore */
-  xSemaphoreTake(xSemaphore3, portMAX_DELAY);
+  xSemaphoreTake(xSemaphore, portMAX_DELAY);
+  xSemaphoreGive(xSemaphore);
   nowTick = xTaskGetTickCount();
   printf("[%s:%d] Take\n",pcTaskGetName(0),nowTick);
 
@@ -619,10 +603,23 @@ void user_init(void)
   sdk_wifi_set_opmode(STATION_MODE);
   sdk_wifi_station_set_config(&config);
 
+  // Mount SPIFFS
+#if SPIFFS_SINGLETON == 1
+  esp_spiffs_init();
+#else
+  // for run-time configuration when SPIFFS_SINGLETON = 0
+  esp_spiffs_init(0x200000, 0x10000);
+#endif
+
+  if (esp_spiffs_mount() != SPIFFS_OK) {
+    printf("Error mount SPIFFS\n");
+    while(1) {
+      vTaskDelay(1000);
+    }
+  }
+
   /* Create Semaphore */
-  xSemaphore1 = xSemaphoreCreateBinary();
-  xSemaphore2 = xSemaphoreCreateBinary();
-  xSemaphore3 = xSemaphoreCreateBinary();
+  xSemaphore = xSemaphoreCreateBinary();
 
   /* Create Mutex */
   xMutex = xSemaphoreCreateMutex();
@@ -631,9 +628,7 @@ void user_init(void)
   xQueue = xQueueCreate(uxQueueLength, uxItemSize);
 
   /* Check everything was created. */
-  configASSERT( xSemaphore1 );
-  configASSERT( xSemaphore2 );
-  configASSERT( xSemaphore3 );
+  configASSERT( xSemaphore );
   configASSERT( xMutex );
   configASSERT( xQueue );
 
