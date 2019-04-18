@@ -184,9 +184,6 @@ static void ssd1306_task(void *pvParameters)
         }
     }
 
-    while(1) {
-      vTaskDelay(2 * SECOND);
-    }
 }
 
 void user_init(void)
