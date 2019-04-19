@@ -34,7 +34,7 @@ __#define I2C_CONNECTION__
 |VCC|--|3.3V|
 |DO|--|GPIO14|
 |DI|--|GPIO13|
-|RST|--|GPIO0(*)|
+|RES|--|GPIO0(*)|
 |DC|--|GPIO4(*)|
 |CS|--|GPIO5(*)|
 
