@@ -15,9 +15,9 @@ __#define I2C_CONNECTION__
 |OLED(i2c)||ESP8266|
 |:-:|:-:|:-:|
 |GND|--|N/C|
-|VCC|--|3.3V|
-|SCL|--|GPIO5|
-|SCK|--|GPIO4|
+|VDD|--|3.3V|
+|SCK|--|GPIO5|
+|SDA|--|GPIO4|
 
 ![ssd1306-1](https://user-images.githubusercontent.com/6020549/56445688-7cd30280-6339-11e9-8013-ef0122278d70.JPG)
 
