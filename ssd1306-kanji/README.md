@@ -42,5 +42,8 @@ __#define I2C_CONNECTION__
 
 ---
 
+Left i2c   
+Right SPI   
+
 ![ssd1306-3](https://user-images.githubusercontent.com/6020549/56445693-82c8e380-6339-11e9-9bc8-a6cc12cd51c1.JPG)
 
