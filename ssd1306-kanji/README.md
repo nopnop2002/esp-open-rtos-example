@@ -34,9 +34,11 @@ __#define I2C_CONNECTION__
 |VCC|--|3.3V|
 |DO|--|GPIO14|
 |DI|--|GPIO13|
-|RST|--|GPIO0|
-|DC|--|GPIO4|
-|CS|--|GPIO5|
+|RST|--|GPIO0(*)|
+|DC|--|GPIO4(*)|
+|CS|--|GPIO5(*)|
+
+\*You can change any GPIO.   
 
 ![ssd1306-2](https://user-images.githubusercontent.com/6020549/56445691-7fcdf300-6339-11e9-9def-d86b776e68c1.JPG)
 
