@@ -498,7 +498,7 @@ void ShowBitmap(uint8_t *bitmap, uint8_t pw, uint8_t ph) {
 }
 
 
-// 8ビットデータを反転
+// 8ビットデータを反転 0x12(00010010)->0x48(01001000)
 uint8_t RotateByte(uint8_t ch1) {
   uint8_t ch2 = 0;
   int j;

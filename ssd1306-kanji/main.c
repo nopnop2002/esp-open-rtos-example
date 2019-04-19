@@ -28,6 +28,7 @@
     #define SDA_PIN  4
 #else
     #define PROTOCOL SSD1306_PROTO_SPI4
+    #define RS_PIN   0
     #define CS_PIN   5
     #define DC_PIN   4
 #endif
@@ -50,6 +51,7 @@ static const ssd1306_t dev = {
 
 /* Local frame buffer */
 static uint8_t buffer[DISPLAY_WIDTH * DISPLAY_HEIGHT / 8];
+static uint8_t invert_buffer[DISPLAY_WIDTH * DISPLAY_HEIGHT / 8];
 
 
 const font_info_t *font = NULL; // current font
@@ -70,6 +72,16 @@ static void SPIFFS_Directory() {
     }
     SPIFFS_closedir(&d);
 }
+
+void ssd1306_invert_frame(uint8_t * src, uint8_t * dst) {
+    size_t sz = DISPLAY_WIDTH * DISPLAY_HEIGHT / 8;
+    int pos = sz - 1;
+    for(int i=0;i<sz;i++) {
+      dst[pos--] = RotateByte(src[i]);
+    }
+    return;
+}
+
 
 int ssd1306_draw_font(const ssd1306_t *dev, uint8_t *fb, uint8_t x, uint8_t y, 
 	uint8_t *fonts, uint8_t pw, uint8_t ph,
@@ -175,7 +187,8 @@ static void ssd1306_task(void *pvParameters)
         sprintf(text, "Tick: %d   ", nowTick);
         ssd1306_draw_string(&dev, buffer, font_builtin_fonts[DEFAULT_FONT], 0, 45, text, OLED_COLOR_WHITE, OLED_COLOR_BLACK);
 
-        if (ssd1306_load_frame_buffer(&dev, buffer)) {
+        ssd1306_invert_frame(buffer, invert_buffer);
+        if (ssd1306_load_frame_buffer(&dev, invert_buffer)) {
           printf("%s: error while loading framebuffer into SSD1306\n", __func__);
           while(1) {
             vTaskDelay(2 * SECOND);
@@ -205,6 +218,16 @@ void user_init(void)
 
 #ifdef I2C_CONNECTION
     i2c_init(I2C_BUS, SCL_PIN, SDA_PIN, I2C_FREQ_400K);
+#endif
+
+#ifndef I2C_CONNECTION
+    gpio_enable(RS_PIN, GPIO_OUTPUT);
+    gpio_write(RS_PIN, 1);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    gpio_write(RS_PIN, 0);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
+    gpio_write(RS_PIN, 1);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
 #endif
 
     while (ssd1306_init(&dev) != 0) {
