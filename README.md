@@ -18,13 +18,21 @@ Japanese Font Driver.
 	$ make
 	$ sudo make flash
 
-# ssd1306-kanji   
-Display Japanese Font to ssd1306 OLED.   
+# ssd1306-128x64   
+Display Japanese Font to ssd1306 128x64 OLED.   
 
 	$ cd Your-esp-open-rtos-Home
 	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
-	$ cd esp-open-rtos-example/spiffs-kanji
+	$ cd esp-open-rtos-example/ssd1306-128x64
 	$ make
 	$ sudo make flash
 
+# ssd1306-64x48   
+Display Japanese Font to ssd1306 64x48 OLED.   
+
+	$ cd Your-esp-open-rtos-Home
+	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
+	$ cd esp-open-rtos-example/ssd1306-64x48
+	$ make
+	$ sudo make flash
 

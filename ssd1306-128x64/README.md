@@ -1,4 +1,4 @@
-# ssd1306-kanji
+# ssd1306-128x64
 
 Display Japanese Font to ssd1306 OLED.   
 
