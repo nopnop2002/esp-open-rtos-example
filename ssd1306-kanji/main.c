@@ -60,6 +60,8 @@ const font_info_t *font = NULL; // current font
 
 #define MYBUFSZ 128
 
+#define INVERT
+
 static void printDirectory() {
     spiffs_DIR d;
     struct spiffs_dirent e;
@@ -73,6 +75,23 @@ static void printDirectory() {
     SPIFFS_closedir(&d);
 }
 
+// 上下＋左右の反転
+void ssd1306_invert_frame(int width, int height, int xofs, int yofs, uint8_t * src, uint8_t * dst) {
+    int page = (height - yofs) / 8;
+    int last = width * page - 1;
+//printf("page=%d last=%d xofs=%d yofs=%d\n",page,last,xofs,yofs);
+    for(int y=0;y<page;y++) {
+      int dpos = last - (y*width);
+      int spos = y * width + xofs;
+//printf("page=%d last=%d dpos=%d spos=%d\n",page,last,dpos,spos);
+      for(int x=xofs;x<width;x++) {
+        dst[dpos--] = RotateByte(src[spos++]);
+      }
+    }
+    return;
+}
+
+#if 0
 void ssd1306_invert_frame(uint8_t * src, uint8_t * dst) {
     size_t sz = DISPLAY_WIDTH * DISPLAY_HEIGHT / 8;
     int pos = sz - 1;
@@ -81,6 +100,7 @@ void ssd1306_invert_frame(uint8_t * src, uint8_t * dst) {
     }
     return;
 }
+#endif
 
 
 int ssd1306_draw_font(const ssd1306_t *dev, uint8_t *fb, uint8_t x, uint8_t y, 
@@ -184,14 +204,20 @@ static void ssd1306_task(void *pvParameters)
     ssd1306_draw_sjis(&dev, buffer, fx, 0, 0, sjis, sjisLen, OLED_COLOR_WHITE, OLED_COLOR_TRANSPARENT);
 
     char text[20];
+    int ypos;
     while (1) {
         nowTick = xTaskGetTickCount();
         ssd1306_fill_rectangle(&dev, buffer, 0, DISPLAY_HEIGHT/2, DISPLAY_WIDTH, DISPLAY_HEIGHT/2, OLED_COLOR_BLACK);
-        sprintf(text, "Tick: %d   ", nowTick);
-        ssd1306_draw_string(&dev, buffer, font_builtin_fonts[DEFAULT_FONT], 0, 45, text, OLED_COLOR_WHITE, OLED_COLOR_TRANSPARENT);
+        sprintf(text, "Tick:%d", nowTick);
+        ypos = DISPLAY_HEIGHT/2 + DISPLAY_HEIGHT/4;
+        ssd1306_draw_string(&dev, buffer, font_builtin_fonts[DEFAULT_FONT], 0, ypos, text, OLED_COLOR_WHITE, OLED_COLOR_TRANSPARENT);
 
-        ssd1306_invert_frame(buffer, invert_buffer);
+#ifdef INVERT
+        ssd1306_invert_frame(DISPLAY_WIDTH, DISPLAY_HEIGHT, 0, 0, buffer, invert_buffer);
         if (ssd1306_load_frame_buffer(&dev, invert_buffer)) {
+#else
+        if (ssd1306_load_frame_buffer(&dev, buffer)) {
+#endif
           printf("%s: error while loading framebuffer into SSD1306\n", __func__);
           while(1) {
             vTaskDelay(2 * SECOND);
