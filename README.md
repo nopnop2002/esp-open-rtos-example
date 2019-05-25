@@ -37,7 +37,7 @@ Display Japanese Font to ssd1306 64x48 OLED.
 	$ sudo make flash
 
 # ssd1306-text   
-Display 8x8 fixed font to ssd1306 OLED.   
+Display 8x8 fixed Font to ssd1306 128x64 OLED.   
 
 	$ cd Your-esp-open-rtos-Home
 	$ git clone https://github.com/nopnop2002/esp-open-rtos-example
