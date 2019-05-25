@@ -1,4 +1,4 @@
-# ssd1306-text
+# ssd1306-fixed-font
 
 Display 8x8 fixed font to ssd1306 OLED.   
 
