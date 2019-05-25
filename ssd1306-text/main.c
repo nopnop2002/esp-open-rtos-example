@@ -152,7 +152,7 @@ static void ssd1306_task(void *pvParameters)
 	ssd1306_clear_text(buffer, 5, true);
 	ssd1306_print_text_center(buffer, 5, text, strlen(text), true);
         ssd1306_invert_frame(DISPLAY_WIDTH, DISPLAY_HEIGHT, 0, 0, buffer, invert_buffer);
-        if (ssd1306_load_frame_buffer(&dev, buffer)) {
+        if (ssd1306_load_frame_buffer(&dev, invert_buffer)) {
     	    printf("%s: error while loading framebuffer into SSD1306\n", __func__)
 ;
             while(1) {
