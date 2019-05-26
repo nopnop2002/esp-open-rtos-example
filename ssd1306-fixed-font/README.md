@@ -42,5 +42,5 @@ __#define I2C_CONNECTION__
 The original version written by Marcel Sondaar is availble at:
 https://github.com/dhepper/font8x8
 
-![ssd1306-fixed-font](https://user-images.githubusercontent.com/6020549/58376084-f1363c80-7f9c-11e9-907b-590ae5805412.JPG)
+![ssd1306-fixed-font](https://user-images.githubusercontent.com/6020549/58376593-306a8a80-7fa9-11e9-8e5a-55b0186f711a.JPG)
 
