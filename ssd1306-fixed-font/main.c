@@ -66,6 +66,7 @@ uint8_t RotateByte(uint8_t ch1) {
   return ch2;
 }
 
+// Convert font to bitmap
 void MakeBitmap(char *fonts, char *line, uint8_t w, uint8_t h) {
   int x,y;
   for(y=0; y<(h/8); y++){
@@ -123,7 +124,6 @@ static int ssd1306_print_text(char font[][8], uint8_t * buf, int page, int seg, 
     for(int i=0;i<strlen;i++) {
         int ch = str[i];
     	//memcpy(&buf[pos], font8x8_basic[ch],8);
-        //MakeBitmap(font8x8_basic[ch], bitmap, 8, 8);
         MakeBitmap(font[ch], bitmap, 8, 8);
     	memcpy(&buf[pos], bitmap, 8);
         if (flag) ssd1306_invert_text(&buf[pos], 8);
@@ -134,55 +134,23 @@ static int ssd1306_print_text(char font[][8], uint8_t * buf, int page, int seg, 
 }
 
 static void ssd1306_print_text_left(char font[][8], uint8_t * buf, int page, char * str, int strlen, bool flag) {
-    int pos = page * 128;
-    char bitmap[8];
-    for(int i=0;i<strlen;i++) {
-        int ch = str[i];
-    	//memcpy(&buf[pos], font8x8_basic[ch],8);
-        //MakeBitmap(font8x8_basic[ch], bitmap, 8, 8);
-        MakeBitmap(font[ch], bitmap, 8, 8);
-    	memcpy(&buf[pos], bitmap, 8);
-        if (flag) ssd1306_invert_text(&buf[pos], 8);
-        pos = pos + 8;
-    }
+    ssd1306_print_text(font, buf, page, 0, str, strlen, flag);
 }
 
 static void ssd1306_print_text_right(char font[][8], uint8_t * buf, int page, char * str, int strlen, bool flag) {
-    int pos = page * 128;
-    int margin = 16 - strlen;
-    pos = pos + (margin * 8);
-    char bitmap[8];
-    for(int i=0;i<strlen;i++) {
-        int ch = str[i];
-    	//memcpy(&buf[pos], font8x8_basic[ch],8);
-        //MakeBitmap(font8x8_basic[ch], bitmap, 8, 8);
-        MakeBitmap(font[ch], bitmap, 8, 8);
-    	memcpy(&buf[pos], bitmap, 8);
-        if (flag) ssd1306_invert_text(&buf[pos], 8);
-        pos = pos + 8;
-    }
+    int pos = (16 - strlen) * 8;
+    ssd1306_print_text(font, buf, page, pos, str, strlen, flag);
 }
 
 static void ssd1306_print_text_center(char font[][8], uint8_t * buf, int page, char * str, int strlen, bool flag) {
-    int pos = page * 128;
-    int margin = (16 - strlen) / 2;
-    pos = pos + (margin * 8);
-    char bitmap[8];
-    for(int i=0;i<strlen;i++) {
-        int ch = str[i];
-    	//memcpy(&buf[pos], font8x8_basic[ch],8);
-        //MakeBitmap(font8x8_basic[ch], bitmap, 8, 8);
-        MakeBitmap(font[ch], bitmap, 8, 8);
-    	memcpy(&buf[pos], bitmap, 8);
-        if (flag) ssd1306_invert_text(&buf[pos], 8);
-        pos = pos + 8;
-    }
+    int pos = (16 - strlen) * 4;
+    ssd1306_print_text(font, buf, page, pos, str, strlen, flag);
 }
 
-static void ssd1306_clear_text(uint8_t * buf, int page, bool flag) {
+static void ssd1306_clear_page(uint8_t * buf, int page, bool flag) {
     char str[16];
     memset(str, 0x20, 16);
-    ssd1306_print_text_left(font8x8_basic, buf, page, str, 16, flag);
+    ssd1306_print_text(font8x8_basic, buf, page, 0, str, 16, flag);
 }
 
 static void ssd1306_task(void *pvParameters)
@@ -227,9 +195,9 @@ static void ssd1306_task(void *pvParameters)
     while(1) {
         TickType_t nowTick = xTaskGetTickCount();
 	sprintf(text, "Tick:%d", nowTick);
-	ssd1306_clear_text(buffer, 6, false);
+	ssd1306_clear_page(buffer, 6, false);
 	ssd1306_print_text_center(font8x8_basic, buffer, 6, text, strlen(text), false);
-	ssd1306_clear_text(buffer, 7, true);
+	ssd1306_clear_page(buffer, 7, true);
 	ssd1306_print_text_center(font8x8_basic, buffer, 7, text, strlen(text), true);
         ssd1306_invert_frame(DISPLAY_WIDTH, DISPLAY_HEIGHT, 0, 0, buffer, invert_buffer);
         if (ssd1306_load_frame_buffer(&dev, invert_buffer)) {
